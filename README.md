@@ -1,16 +1,13 @@
-[![Tests](../../actions/workflows/tests-13-sprint.yml/badge.svg)](../../actions/workflows/tests-13-sprint.yml) [![Tests](../../actions/workflows/tests-14-sprint.yml/badge.svg)](../../actions/workflows/tests-14-sprint.yml)
-# Проект Mesto фронтенд + бэкенд
+# Проект MESTO Express
+Проект Mesto Express выполнен с помощью библиотеки Node.js Функциональность Backend разработки "Место" позволяет получать по api
+запросы с Frontend и обрабатывать их ипользуя базу данных MongoDB.
 
+#####В данной работе были применены такие технологии как:
 
-## Директории
+- обработка запросов API
+- Чтение, запись базы данных MangoDB
+- Обработка ошибок как на стороне клиента так и на стороне сервера.
 
-`/routes` — папка с файлами роутера  
-`/controllers` — папка с файлами контроллеров пользователя и карточки   
-`/models` — папка с файлами описания схем пользователя и карточки  
-  
-Остальные директории вспомогательные, создаются при необходимости разработчиком
+Ссылка на проект: 
 
-## Запуск проекта
-
-`npm run start` — запускает сервер   
-`npm run dev` — запускает сервер с hot-reload
+https://github.com/Hachatur4/express-mesto-gha.git
