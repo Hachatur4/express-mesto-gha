@@ -9,6 +9,7 @@
     "no-shadow": "off",
     "spaced-comment": "off",
     "arrow-body-style": "off",
-    "consistent-return": "off"
+    "consistent-return": "off",
+    "quote-props": "off"
 }
 }
