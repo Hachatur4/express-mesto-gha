@@ -52,7 +52,7 @@ module.exports.likeCard = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(400).send({ "message": "Переданы некорректные данные для постановки лайка." });
       } if (err.name === "CastError") {
-        return res.status(404).send({ "message": "Передан несуществующий id карточки." });
+        return res.status(400).send({ "message": "Передан несуществующий id карточки." });
       }
       return res.status(500).send({ "message": "Ошибка по умолчанию." });
     });
@@ -74,7 +74,7 @@ module.exports.dislikeCard = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(400).send({ "message": "Переданы некорректные данные для снятии лайка." });
       } if (err.name === "CastError") {
-        return res.status(404).send({ "message": "Передан несуществующий id карточки." });
+        return res.status(400).send({ "message": "Передан несуществующий id карточки." });
       }
       return res.status(500).send({ "message": "Ошибка по умолчанию." });
     });
