@@ -8,7 +8,7 @@
     "dev": "nodemon app.js",
     "lint": "npx eslint ."
   },
-  "author": "",
+  "author": "Hachatur4@yandex.ru",
   "license": "ISC",
   "dependencies": {
     "eslint": "^8.48.0",

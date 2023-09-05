@@ -10,7 +10,7 @@ module.exports.getUser = (req, res) => {
       return res.status(200).send({ "message": users });
     })
     .catch((err) => {
-      return res.status(500).send({ "message": "Ошибка по умолчанию." });
+      return res.status(500).send({ "message": "На сервере произошла ошибка." });
     });
 };
 
@@ -26,7 +26,7 @@ module.exports.getUserById = (req, res) => {
       if (err.name === "CastError") {
         return res.status(400).send({ "message": "Пользователь по указанному id не найден." });
       }
-      return res.status(500).send({ "message": "Ошибка по умолчанию." });
+      return res.status(500).send({ "message": "На сервере произошла ошибка." });
     });
 };
 
@@ -39,7 +39,7 @@ module.exports.createUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(400).send({ "message": "Переданы некорректные данные при создании пользователя." });
       }
-      return res.status(500).send({ "message": "Ошибка по умолчанию." });
+      return res.status(500).send({ "message": "На сервере произошла ошибка." });
     });
 };
 
@@ -54,7 +54,7 @@ module.exports.updateUserInfo = (req, res) => {
       } if (err.name === "CastError") {
         return res.status(404).send({ message: "Пользователь по указанному id не найден." });
       }
-      return res.status(500).send({ "message": "Ошибка по умолчанию." });
+      return res.status(500).send({ "message": "На сервере произошла ошибка." });
     });
 };
 
@@ -69,6 +69,6 @@ module.exports.updateUserAvatar = (req, res) => {
       } if (err.name === "CastError") {
         return res.status(404).send({ "message": "Пользователь по указанному id не найден." });
       }
-      return res.status(500).send({ "message": "Ошибка по умолчанию." });
+      return res.status(500).send({ "message": "На сервере произошла ошибка." });
     });
 };
