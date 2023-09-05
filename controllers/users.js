@@ -10,7 +10,7 @@ module.exports.getUser = (req, res) => {
       return res.status(200).send({ "message": users });
     })
     .catch((err) => {
-      res.status(500).send({ "message": "Ошибка по умолчанию." });
+      return res.status(500).send({ "message": "Ошибка по умолчанию." });
     });
 };
 
@@ -18,7 +18,7 @@ module.exports.getUserById = (req, res) => {
   return User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        return res.status(400).send({ "message": "Указанного id нет в базе данных." });
+        return res.status(404).send({ "message": "Указанного id нет в базе данных." });
       }
       return res.status(200).send({ "message": user });
     })
@@ -65,9 +65,9 @@ module.exports.updateUserAvatar = (req, res) => {
     .then((user) => res.status(200).send({ "message": user }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(400).send({ "message": "Переданы некорректные данные пользователя." });
+        return res.status(400).send({ "message": "Переданы некорректные данные пользователя." });
       } if (err.name === "CastError") {
-        res.status(404).send({ "message": "Пользователь по указанному id не найден." });
+        return res.status(404).send({ "message": "Пользователь по указанному id не найден." });
       }
       return res.status(500).send({ "message": "Ошибка по умолчанию." });
     });
