@@ -15,11 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.post('/signin', login);
-
 app.post('/signup', createUser);
-
 app.use('/users', auth, require('./routes/users'));
-
 app.use('/cards', auth, require('./routes/cards'));
 
 app.use('*', (req, res) => {
@@ -28,7 +25,6 @@ app.use('*', (req, res) => {
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
-
   res
     .status(statusCode)
     .send({
