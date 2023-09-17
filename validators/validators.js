@@ -11,9 +11,9 @@ module.exports.createCardValidator = celebrate({
 
 module.exports.createUserValidator = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
-    avatar: Joi.string().required().custom(url, 'url validation'),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().custom(url, 'url validation'),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),

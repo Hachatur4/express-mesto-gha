@@ -31,7 +31,7 @@ app.use(auth);
 app.use('/users', users);
 app.use('/cards', cards);
 
-app.use('*', (req, res) => {
+app.use('*', (req, res, next) => {
   return next(new NotFoundError('Страница не найдена.'));
 });
 

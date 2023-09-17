@@ -18,10 +18,10 @@ module.exports.deleteCard = (req, res, next) => {
       if (!card) {
         throw new NotFoundError('Указанного id нет в базе данных.');
       }
-      if (!card.owner !== req.user._id) {
+      if (!card.owner === req.user._id) {
         throw new ForbiddenError('Вы не можете удалить чужую карточку.');
       }
-      Card.deleteOne(card)
+      return Card.deleteOne(card, { new: true })
         .then((result) => {
           return res.status(200).send(card);
         });
