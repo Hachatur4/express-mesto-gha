@@ -18,16 +18,10 @@ function addCookieToResponse(res, user) {
 }
 
 function usersPasswordHandler(pass) {
-  if (!pass) {
-    throw new BadRequesError('Не указан пароль');
-  }
-  if (pass.length < 8) {
-    throw new BadRequesError('Пароль должен быть не короче 8 символов');
-  }
   return bcrypt.hash(pass, 10);
 }
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       if (users.length === 0) {
@@ -40,7 +34,7 @@ module.exports.getUsers = (req, res) => {
     });
 };
 
-module.exports.getUser = (req, res) => {
+module.exports.getUser = (req, res, next) => {
   return User.findById(req.user._id)
     .then((user) => {
       if (!user) {
@@ -50,13 +44,13 @@ module.exports.getUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        next(new NotFoundError('Пользователь по указанному id не найден.'));
+        return next(new BadRequesError('Некорректные данные.'));
       }
       next(err);
     });
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   return User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
@@ -66,13 +60,13 @@ module.exports.getUserById = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        next(new NotFoundError('Пользователь по указанному id не найден.'));
+        return next(new BadRequesError('Некорректные данные.'));
       }
       next(err);
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name,
     about,
@@ -91,10 +85,10 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.status(201).send({ "message": 'Вы успешно зарегистрировались' }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(new NotFoundError('Переданы некорректные данные при создании пользователя.'));
+        return next(new BadRequesError('Переданы некорректные данные при создании пользователя.'));
       }
-      if (err.name === 'MongoError' && err.code === 11000) {
-        next(new BadRequesError('Пользователь с данным email уже зарегистрирован'));
+      if (err.name === 'MongoServerError' && err.code === 11000) {
+        return next(new BadRequesError('Пользователь с данным email уже зарегистрирован'));
       }
       next(err);
     });
@@ -102,14 +96,14 @@ module.exports.createUser = (req, res) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  return User.findOne(email).select('+password')
+  return User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        throw new ForbiddenError('Такого пользователя не существует.');
+        throw new UnauthorizedError('Такого пользователя не существует.');
       }
       bcrypt.compare(password, user.password, (error, isValid) => {
         if (!isValid) {
-          throw new UnauthorizedError('Неправильные почта или пароль.');
+          return next(new UnauthorizedError('Неправильные почта или пароль.'));
         }
         addCookieToResponse(res, user);
         res.status(200).send({ "message": 'Вы успешно авторизованы' });
@@ -121,31 +115,31 @@ module.exports.login = (req, res, next) => {
     });
 };
 
-module.exports.updateUserInfo = (req, res) => {
+module.exports.updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => res.status(200).send({ "message": user }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(new NotFoundError('Переданы некорректные данные при создании пользователя.'));
+        return next(new BadRequesError('Переданы некорректные данные при создании пользователя.'));
       } if (err.name === "CastError") {
-        next(new NotFoundError('Пользователь по указанному id не найден.'));
+        return next(new BadRequesError('Пользователь по указанному id не найден.'));
       }
       next(err);
     });
 };
 
-module.exports.updateUserAvatar = (req, res) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => res.status(200).send({ "message": user }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(new NotFoundError('Переданы некорректные данные при создании пользователя.'));
+        return next(new BadRequesError('Переданы некорректные данные при создании пользователя.'));
       } if (err.name === "CastError") {
-        next(new NotFoundError('Пользователь по указанному id не найден.'));
+        return next(new BadRequesError('Пользователь по указанному id не найден.'));
       }
       next(err);
     });
