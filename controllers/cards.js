@@ -18,7 +18,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (!card) {
         throw new NotFoundError('Указанного id нет в базе данных.');
       }
-      if (!card.owner === req.user._id) {
+      if (card.owner.toString() !== req.user._id) {
         throw new ForbiddenError('Вы не можете удалить чужую карточку.');
       }
       return Card.deleteOne(card, { new: true })
