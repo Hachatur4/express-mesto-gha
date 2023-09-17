@@ -27,7 +27,7 @@ app.use(cookieParser());
 
 app.post('/signin', loginValidator, login);
 app.post('/signup', createUserValidator, createUser);
-/*app.use(auth);*/
+app.use(auth);
 app.use('/users', users);
 app.use('/cards', cards);
 
