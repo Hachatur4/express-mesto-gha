@@ -10,6 +10,10 @@ const users = require('./routes/users');
 const cards = require('./routes/cards');
 const NotFoundError = require('./errors/not-found-error');
 const errorHandler = require('./middlewares/error-handler');
+const {
+  loginValidator,
+  createUserValidator,
+} = require('./validators/validators');
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   useNewUrlParser: true,
@@ -21,14 +25,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.post('/signin', login);
-app.post('/signup', createUser);
-app.use(auth);
+app.post('/signin', loginValidator, login);
+app.post('/signup', createUserValidator, createUser);
+/*app.use(auth);*/
 app.use('/users', users);
 app.use('/cards', cards);
 
 app.use('*', (req, res) => {
-  next(new NotFoundError('Страница не найдена.'));
+  return next(new NotFoundError('Страница не найдена.'));
 });
 
 app.use(errors());

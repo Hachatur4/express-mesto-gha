@@ -5,6 +5,7 @@ const UnauthorizedError = require('../errors/unauthorized-error');
 const NotFoundError = require('../errors/not-found-error');
 const ForbiddenError = require('../errors/forbidden-error');
 const BadRequesError = require('../errors/bad-request-error');
+const VerificationError = require('../errors/verification-error');
 
 function addCookieToResponse(res, user) {
   const token = jwt.sign(
@@ -82,13 +83,13 @@ module.exports.createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => res.status(201).send({ "message": 'Вы успешно зарегистрировались' }))
+    .then((user) => res.status(201).send(user))
     .catch((err) => {
       if (err.name === "ValidationError") {
         return next(new BadRequesError('Переданы некорректные данные при создании пользователя.'));
       }
       if (err.name === 'MongoServerError' && err.code === 11000) {
-        return next(new BadRequesError('Пользователь с данным email уже зарегистрирован'));
+        return next(new VerificationError('Пользователь с данным email уже зарегистрирован'));
       }
       next(err);
     });
@@ -103,7 +104,7 @@ module.exports.login = (req, res, next) => {
       }
       bcrypt.compare(password, user.password, (error, isValid) => {
         if (!isValid) {
-          return next(new UnauthorizedError('Неправильные почта или пароль.'));
+          return next(new BadRequesError('Неправильные почта или пароль.'));
         }
         addCookieToResponse(res, user);
         res.status(200).send({ "message": 'Вы успешно авторизованы' });
