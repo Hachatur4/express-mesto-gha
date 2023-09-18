@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const UnauthorizedError = require('../errors/unauthorized-error');
 const NotFoundError = require('../errors/not-found-error');
-const ForbiddenError = require('../errors/forbidden-error');
 const BadRequesError = require('../errors/bad-request-error');
 const VerificationError = require('../errors/verification-error');
 
@@ -110,7 +109,7 @@ module.exports.login = (req, res, next) => {
       }
       bcrypt.compare(password, user.password, (error, isValid) => {
         if (!isValid) {
-          return next(new BadRequesError('Неправильные почта или пароль.'));
+          return next(new UnauthorizedError('Неправильные почта или пароль.'));
         }
         addCookieToResponse(res, user);
         res.status(200).send({ "message": 'Вы успешно авторизованы' });

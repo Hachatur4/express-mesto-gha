@@ -28,7 +28,7 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        next(new BadRequesError('Карточка по указанному id не найдена.'));
+        return next(new BadRequesError('Карточка по указанному id не найдена.'));
       }
       next(err);
     });
@@ -40,7 +40,7 @@ module.exports.createCard = (req, res, next) => {
     .then((card) => res.status(201).send({ "message": card }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(new BadRequesError('Переданы некорректные данные при создании карточки.'));
+        return next(new BadRequesError('Переданы некорректные данные при создании карточки.'));
       }
       next(err);
     });
@@ -60,9 +60,9 @@ module.exports.likeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(new BadRequesError('Переданы некорректные данные для постановки лайка.'));
+        return next(new BadRequesError('Переданы некорректные данные для постановки лайка.'));
       } if (err.name === "CastError") {
-        next(new BadRequesError('Передан несуществующий id карточки.'));
+        return next(new BadRequesError('Передан несуществующий id карточки.'));
       }
       next(err);
     });
@@ -82,9 +82,9 @@ module.exports.dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(new BadRequesError('Переданы некорректные данные для снятии лайка.'));
+        return next(new BadRequesError('Переданы некорректные данные для снятии лайка.'));
       } if (err.name === "CastError") {
-        next(new BadRequesError('Передан несуществующий id карточки.'));
+        return next(new BadRequesError('Передан несуществующий id карточки.'));
       }
       next(err);
     });
