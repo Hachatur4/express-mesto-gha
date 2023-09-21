@@ -9,7 +9,7 @@ const VerificationError = require('../errors/verification-error');
 function addCookieToResponse(res, user) {
   const token = jwt.sign(
     { _id: user._id },
-    'ded13ce1a4e548a829e2608470f868a5e89b9f2d9e4c2f2fdd270e785fb3bce6',
+    NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
     { expiresIn: '7d' },
   );
   res

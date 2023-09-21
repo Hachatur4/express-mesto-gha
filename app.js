@@ -1,6 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
+const helmet = require('helmet');
 const port = 3000;
 const { errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
@@ -14,6 +16,7 @@ const {
   loginValidator,
   createUserValidator,
 } = require('./validators/validators');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   useNewUrlParser: true,
@@ -21,9 +24,26 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   console.log('DB Active');
 });
 
+app.use(helmet());
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use(requestLogger);
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 
 app.post('/signin', loginValidator, login);
 app.post('/signup', createUserValidator, createUser);
@@ -34,6 +54,8 @@ app.use('/cards', cards);
 app.use('*', (req, res, next) => {
   return next(new NotFoundError('Страница не найдена.'));
 });
+
+app.use(errorLogger);
 
 app.use(errors());
 app.use(errorHandler);
